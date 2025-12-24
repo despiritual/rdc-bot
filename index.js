@@ -1,9 +1,25 @@
-const {
-  Client,
-  GatewayIntentBits,
-  Events
+const { 
+  Client, 
+  GatewayIntentBits, 
+  Events 
 } = require("discord.js");
 
+const express = require("express");
+
+// ---- Dummy web server (for Render) ----
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+  res.send("RDC bot is running!");
+});
+
+app.listen(PORT, () => {
+  console.log(`🌐 Web server listening on port ${PORT}`);
+});
+// --------------------------------------
+
+// Discord bot
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -12,18 +28,16 @@ const client = new Client({
   ]
 });
 
-//when bot is ready
 client.once(Events.ClientReady, () => {
   console.log(`✅ RDC bot is online as ${client.user.tag}`);
 });
 
-//Slash command handling
 client.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return;
-  
-  if (interaction.commandName === "ping") { await interaction.reply( "🏓Pong! RDC bot is alive.");
+
+  if (interaction.commandName === "ping") {
+    await interaction.reply("🏓 Pong! RDC bot is alive.");
   }
 });
 
-//login (token comes from environment, not hardcoded)
 client.login(process.env.TOKEN);
